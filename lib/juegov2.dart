@@ -1,68 +1,16 @@
 import 'package:flutter/material.dart';
 
+int turno = 1;
+List<List<Color>> matrix = <List<Color>>[];
+
 void main() {
+  crearMatrizVacia();
   runApp(MaterialApp(
     title: 'Navigation Basics',
     debugShowCheckedModeBanner: false,
     home: juegov2(),
   ));
 }
-
-int turno= 0;
-
-MaterialButton pieza = MaterialButton(
-  padding: const EdgeInsets.all(0.5),
-  minWidth: 66,
-  height: 390,
-  onPressed: () {cambiaColor(pieza);},
-  child: Column(
-    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    children: [
-      Container(
-        width: 60,
-        height: 60,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-        ),
-      ),
-      Container(
-        width: 60,
-        height: 60,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-        ),
-      ),
-      Container(
-        width: 60,
-        height: 60,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-        ),
-      ),
-      Container(
-        width: 60,
-        height: 60,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-        ),
-      ),
-      Container(
-        width: 60,
-        height: 60,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-        ),
-      ),
-      Container(
-        width: 60,
-        height: 60,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-        ),
-      )
-    ],
-  ),
-);
 
 class juegov2 extends StatelessWidget {
   @override
@@ -74,44 +22,6 @@ class juegov2 extends StatelessWidget {
             Container(
               height: 40,
             ),
-            /**
-                TextButton(
-                style: TextButton.styleFrom(
-                foregroundColor: Colors.black,
-                padding: const EdgeInsets.only(left: 100, right: 100),
-                textStyle: const TextStyle(fontSize: 20),
-                ),
-                onPressed: () {Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Inicio()),
-                );},
-                child: const Text('Inicio'),
-                ),
-                TextButton(
-                style: TextButton.styleFrom(
-                foregroundColor: Colors.black,
-                padding: const EdgeInsets.only(left: 60, right: 60),
-                textStyle: const TextStyle(fontSize: 20),
-                ),
-                onPressed: () {Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Instagram()),
-                );},
-                child: const Text('Instagram'),
-                ),
-                TextButton(
-                style: TextButton.styleFrom(
-                foregroundColor: Colors.black,
-                padding: const EdgeInsets.only(left: 100, right: 100),
-                textStyle: const TextStyle(fontSize: 20),
-                ),
-                onPressed: () {Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Final()),
-                );},
-                child: const Text('Final'),
-                ),
-             */
           ]),
         ),
         appBar: AppBar(
@@ -125,7 +35,7 @@ class juegov2 extends StatelessWidget {
           ),
         ),
         body:
-        Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+            Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
           Container(
             height: 15,
           ),
@@ -155,24 +65,22 @@ class juegov2 extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Container(
-                decoration: const BoxDecoration(
-                  color: Colors.grey,
-                ),
-                height: 400,
-                width: 400,
-                child:
-                  Row(
+                  decoration: const BoxDecoration(
+                    color: Colors.grey,
+                  ),
+                  height: 400,
+                  width: 400,
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      pieza,
-                      pieza,
-                      pieza,
-                      pieza,
-                      pieza,
-                      pieza
+                      buildButton(context, 0),
+                      buildButton(context, 1),
+                      buildButton(context, 2),
+                      buildButton(context, 3),
+                      buildButton(context, 4),
+                      buildButton(context, 5),
                     ],
-                  )
-              )
+                  ))
             ],
           ),
           Container(
@@ -212,15 +120,48 @@ class juegov2 extends StatelessWidget {
   }
 }
 
-
-void cambiaColor(MaterialButton tb) {
-  if(tb.color == Colors.white){
-    if(turno%0==0){
-      tb.color == Colors.red;
-    } else{
-      tb.color == Colors.blueAccent;
+void cambiaColor(int columna) {
+  for (var j = 5; j > -1; j--) {
+    if (matrix[j][columna] == Colors.white) {
+      if (turno % 2 == 0) {
+        matrix[j][columna] = Colors.red;
+      } else {
+        matrix[j][columna] = Colors.blueAccent;
+      }
+      break;
     }
   }
   turno++;
-  // https://es.stackoverflow.com/questions/540915/cambiar-color-de-fondo-por-parametro-en-flutter
 }
+
+void crearMatrizVacia() {
+  for (var i = 0; i < 6; i++) {
+    List<Color> list = <Color>[];
+    for (var j = 0; j < 6; j++) {
+      list.add(Colors.white);
+    }
+    matrix.add(list);
+  }
+}
+
+  Widget buildButton(BuildContext context, int columna) {
+    return MaterialButton(
+      padding: const EdgeInsets.all(0.5),
+      minWidth: 66,
+      height: 390,
+      onPressed: () {
+        cambiaColor(columna);
+      },
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Container(width: 60, height: 60, color: matrix[0][columna]),
+          Container(width: 60, height: 60, color: matrix[1][columna]),
+          Container(width: 60, height: 60, color: matrix[2][columna]),
+          Container(width: 60, height: 60, color: matrix[3][columna]),
+          Container(width: 60, height: 60, color: matrix[4][columna]),
+          Container(width: 60, height: 60, color: matrix[5][columna]),
+        ],
+      ),
+    );
+  }
