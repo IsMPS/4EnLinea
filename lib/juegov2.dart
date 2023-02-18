@@ -1,5 +1,10 @@
+// ignore_for_file: camel_case_types
+
 import 'package:flutter/material.dart';
-List<Color> turnos = [Colors.white,Colors.amber];
+//import 'dart:convert';
+//import 'dart:io';
+
+List<Color> turnos = [Colors.white, Colors.amber];
 int turno = 0;
 List<List<Color>> matrix = <List<Color>>[];
 bool ganado = false;
@@ -7,7 +12,7 @@ String playerGanador = '';
 
 void main() {
   crearMatrizVacia();
-  runApp(MaterialApp(
+  runApp(const MaterialApp(
     title: 'Navigation Basics',
     debugShowCheckedModeBanner: false,
     home: juegov2(),
@@ -15,12 +20,13 @@ void main() {
 }
 
 class juegov2 extends StatefulWidget {
+  const juegov2({super.key});
+
   @override
   State<juegov2> createState() => _juegov2State();
 }
 
 class _juegov2State extends State<juegov2> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,7 +49,7 @@ class _juegov2State extends State<juegov2> {
           ),
         ),
         body:
-            Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+        Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
           Container(
             height: 15,
           ),
@@ -58,18 +64,13 @@ class _juegov2State extends State<juegov2> {
                     fontWeight: FontWeight.bold,
                     backgroundColor: turnos[1]),
               ),
-              Text(
-                'Player 2',
-                style: TextStyle(
-                    color: Colors.red,
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                    backgroundColor: turnos[0])
-              ),
+              Text('Player 2',
+                  style: TextStyle(
+                      color: Colors.red,
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      backgroundColor: turnos[0])),
             ],
-          ),
-          Container(
-            height: 15,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -93,15 +94,15 @@ class _juegov2State extends State<juegov2> {
                   ))
             ],
           ),
-          Container(
-            height: 30,
-            child: Text(
-                playerGanador,
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold)
-            )
+          SizedBox(
+              height: 30,
+              child: Text(
+                  playerGanador,
+                  style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold)
+              )
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -142,23 +143,28 @@ class _juegov2State extends State<juegov2> {
         if (matrix[j][columna] == Colors.white) {
           turno++;
           if (turno % 2 == 0) {
-            turnos[1]=Colors.amber;
-            turnos[0]=Colors.white;
+            turnos[1] = Colors.amber;
+            turnos[0] = Colors.white;
             matrix[j][columna] = Colors.red;
           } else {
-            turnos[0]=Colors.amber;
-            turnos[1]=Colors.white;
+            turnos[0] = Colors.amber;
+            turnos[1] = Colors.white;
             matrix[j][columna] = Colors.blueAccent;
           }
           break;
         }
       }
       ganador();
-      if(ganado){
-        turnos[1]=Colors.white;
-        turnos[0]=Colors.white;
-        turnos[turno%2]=Colors.amber;
-        playerGanador = 'Ganador';
+      if (ganado) {
+        turnos[1] = Colors.white;
+        turnos[0] = Colors.white;
+        turnos[turno % 2] = Colors.amber;
+        int jugador = turno % 2;
+        if (jugador == 0) {
+          jugador = 2;
+        }
+        playerGanador = 'Ganador Player $jugador';
+        //almacenar(jugador);
       }
     }
     setState(() {});
@@ -241,4 +247,15 @@ void ganador() {
       }
     }
   }
+}
+
+void almacenar(int player){
+/**
+  Map<String, dynamic> toJson() =>
+      {'player': player, 'date': DateTime.now().toIso8601String()};
+  var jsonString = jsonEncode(toJson());
+  final file = File('winner.json');
+  file.writeAsStringSync(jsonString);
+    */
+
 }
