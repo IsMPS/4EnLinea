@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-int turno = 1;
+int turno = 0;
 List<List<Color>> matrix = <List<Color>>[];
+bool ganado = false;
 
 void main() {
   crearMatrizVacia();
@@ -12,7 +13,12 @@ void main() {
   ));
 }
 
-class juegov2 extends StatelessWidget {
+class juegov2 extends StatefulWidget {
+  @override
+  State<juegov2> createState() => _juegov2State();
+}
+
+class _juegov2State extends State<juegov2> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -118,31 +124,24 @@ class juegov2 extends StatelessWidget {
           // Botones de abajo juego y copa(clasificación)
         ]));
   }
-}
 
-void cambiaColor(int columna) {
-  for (var j = 5; j > -1; j--) {
-    if (matrix[j][columna] == Colors.white) {
-      if (turno % 2 == 0) {
-        matrix[j][columna] = Colors.red;
-      } else {
-        matrix[j][columna] = Colors.blueAccent;
+  void cambiaColor(int columna) {
+    if (!ganado) {
+      for (var j = 5; j > -1; j--) {
+        if (matrix[j][columna] == Colors.white) {
+          turno++;
+          if (turno % 2 == 0) {
+            matrix[j][columna] = Colors.red;
+          } else {
+            matrix[j][columna] = Colors.blueAccent;
+          }
+          break;
+        }
       }
-      break;
+      ganador();
     }
+    setState(() {});
   }
-  turno++;
-}
-
-void crearMatrizVacia() {
-  for (var i = 0; i < 6; i++) {
-    List<Color> list = <Color>[];
-    for (var j = 0; j < 6; j++) {
-      list.add(Colors.white);
-    }
-    matrix.add(list);
-  }
-}
 
   Widget buildButton(BuildContext context, int columna) {
     return MaterialButton(
@@ -165,3 +164,64 @@ void crearMatrizVacia() {
       ),
     );
   }
+}
+
+void crearMatrizVacia() {
+  for (var i = 0; i < 6; i++) {
+    List<Color> list = <Color>[];
+    for (var j = 0; j < 6; j++) {
+      list.add(Colors.white);
+    }
+    matrix.add(list);
+  }
+}
+
+void ganador() {
+  // Comprobar en horizontal
+  for (int i = 0; i < 6; i++) {
+    for (int j = 0; j < 3; j++) {
+      if (matrix[i][j] != Colors.white &&
+          matrix[i][j] == matrix[i][j + 1] &&
+          matrix[i][j] == matrix[i][j + 2] &&
+          matrix[i][j] == matrix[i][j + 3]) {
+        ganado = true;
+      }
+    }
+  }
+
+  // Comprobar en vertical
+  for (int i = 0; i < 3; i++) {
+    for (int j = 0; j < 6; j++) {
+      if (matrix[i][j] != Colors.white &&
+          matrix[i][j] == matrix[i + 1][j] &&
+          matrix[i][j] == matrix[i + 2][j] &&
+          matrix[i][j] == matrix[i + 3][j]) {
+        ganado = true;
+      }
+    }
+  }
+
+  // Comprobar en diagonal hacia la derecha
+  for (int i = 0; i < 3; i++) {
+    for (int j = 0; j < 3; j++) {
+      if (matrix[i][j] != Colors.white &&
+          matrix[i][j] == matrix[i + 1][j + 1] &&
+          matrix[i][j] == matrix[i + 2][j + 2] &&
+          matrix[i][j] == matrix[i + 3][j + 3]) {
+        ganado = true;
+      }
+    }
+  }
+
+  // Comprobar en diagonal hacia la izquierda
+  for (int i = 0; i < 3; i++) {
+    for (int j = 3; j < 6; j++) {
+      if (matrix[i][j] != Colors.white &&
+          matrix[i][j] == matrix[i + 1][j - 1] &&
+          matrix[i][j] == matrix[i + 2][j - 2] &&
+          matrix[i][j] == matrix[i + 3][j - 3]) {
+        ganado = true;
+      }
+    }
+  }
+}
