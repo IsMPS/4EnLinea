@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-
+List<Color> turnos = [Colors.white,Colors.amber];
 int turno = 0;
 List<List<Color>> matrix = <List<Color>>[];
 bool ganado = false;
+String playerGanador = '';
 
 void main() {
   crearMatrizVacia();
@@ -19,6 +20,7 @@ class juegov2 extends StatefulWidget {
 }
 
 class _juegov2State extends State<juegov2> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,20 +49,22 @@ class _juegov2State extends State<juegov2> {
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: const [
+            children: [
               Text(
                 'Player 1',
                 style: TextStyle(
                     color: Colors.blueAccent,
                     fontSize: 30,
-                    fontWeight: FontWeight.bold),
+                    fontWeight: FontWeight.bold,
+                    backgroundColor: turnos[1]),
               ),
               Text(
                 'Player 2',
                 style: TextStyle(
                     color: Colors.red,
                     fontSize: 30,
-                    fontWeight: FontWeight.bold),
+                    fontWeight: FontWeight.bold,
+                    backgroundColor: turnos[0])
               ),
             ],
           ),
@@ -91,6 +95,13 @@ class _juegov2State extends State<juegov2> {
           ),
           Container(
             height: 30,
+            child: Text(
+                playerGanador,
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold)
+            )
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -131,14 +142,24 @@ class _juegov2State extends State<juegov2> {
         if (matrix[j][columna] == Colors.white) {
           turno++;
           if (turno % 2 == 0) {
+            turnos[1]=Colors.amber;
+            turnos[0]=Colors.white;
             matrix[j][columna] = Colors.red;
           } else {
+            turnos[0]=Colors.amber;
+            turnos[1]=Colors.white;
             matrix[j][columna] = Colors.blueAccent;
           }
           break;
         }
       }
       ganador();
+      if(ganado){
+        turnos[1]=Colors.white;
+        turnos[0]=Colors.white;
+        turnos[turno%2]=Colors.amber;
+        playerGanador = 'Ganador';
+      }
     }
     setState(() {});
   }
@@ -177,7 +198,6 @@ void crearMatrizVacia() {
 }
 
 void ganador() {
-  // Comprobar en horizontal
   for (int i = 0; i < 6; i++) {
     for (int j = 0; j < 3; j++) {
       if (matrix[i][j] != Colors.white &&
@@ -189,7 +209,6 @@ void ganador() {
     }
   }
 
-  // Comprobar en vertical
   for (int i = 0; i < 3; i++) {
     for (int j = 0; j < 6; j++) {
       if (matrix[i][j] != Colors.white &&
@@ -201,7 +220,6 @@ void ganador() {
     }
   }
 
-  // Comprobar en diagonal hacia la derecha
   for (int i = 0; i < 3; i++) {
     for (int j = 0; j < 3; j++) {
       if (matrix[i][j] != Colors.white &&
@@ -213,7 +231,6 @@ void ganador() {
     }
   }
 
-  // Comprobar en diagonal hacia la izquierda
   for (int i = 0; i < 3; i++) {
     for (int j = 3; j < 6; j++) {
       if (matrix[i][j] != Colors.white &&
