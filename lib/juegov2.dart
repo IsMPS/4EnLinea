@@ -1,8 +1,9 @@
 // ignore_for_file: camel_case_types
 
+import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
-//import 'dart:convert';
-//import 'dart:io';
+import 'dart:convert';
+import 'dart:io';
 
 List<Color> turnos = [Colors.white, Colors.amber];
 int turno = 0;
@@ -20,7 +21,7 @@ void main() {
 }
 
 class juegov2 extends StatefulWidget {
-  const juegov2({super.key});
+  const juegov2({Key? key}) : super(key: key);
 
   @override
   State<juegov2> createState() => _juegov2State();
@@ -137,6 +138,30 @@ class _juegov2State extends State<juegov2> {
         ]));
   }
 
+  void function(int p) async {
+    Map<String, dynamic> newGanador = {
+      'player': 'Player',
+      'date': DateTime.now().toIso8601String(),
+    };
+
+    File file = File('ganadores.json');
+
+    if (!file.existsSync()) {
+      file.createSync();
+      file.writeAsStringSync(json.encode({'ganadores': [newGanador]}));
+    } else {
+      String jsonString = await file.readAsString();
+      Map<String, dynamic> data = json.decode(jsonString);
+
+      // Inicializar la lista de ganadores si no existe
+
+      data['ganadores'].add(newGanador);
+
+      String newJsonString = json.encode(data);
+      file.writeAsStringSync(newJsonString);
+    }
+  }
+
   void cambiaColor(int columna) {
     if (!ganado) {
       for (var j = 5; j > -1; j--) {
@@ -164,7 +189,7 @@ class _juegov2State extends State<juegov2> {
           jugador = 2;
         }
         playerGanador = 'Ganador Player $jugador';
-        //almacenar(jugador);
+        //function(jugador);
       }
     }
     setState(() {});
@@ -194,6 +219,7 @@ class _juegov2State extends State<juegov2> {
 }
 
 void crearMatrizVacia() {
+  turno=0;
   for (var i = 0; i < 6; i++) {
     List<Color> list = <Color>[];
     for (var j = 0; j < 6; j++) {
@@ -249,13 +275,9 @@ void ganador() {
   }
 }
 
-void almacenar(int player){
-/**
-  Map<String, dynamic> toJson() =>
-      {'player': player, 'date': DateTime.now().toIso8601String()};
-  var jsonString = jsonEncode(toJson());
-  final file = File('winner.json');
-  file.writeAsStringSync(jsonString);
-    */
-
+Future<void> writeDataToFile(String fileName, dynamic data) async {
+  final directory = await getApplicationDocumentsDirectory();
+  final file = File('${directory.path}/$fileName');
+  final jsonString = json.encode(data);
+  await file.writeAsString(jsonString);
 }
